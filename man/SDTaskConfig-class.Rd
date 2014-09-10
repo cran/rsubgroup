@@ -59,7 +59,8 @@
 	removes patterns that do not significantly improve
 	(0.05 level) w.r.t. all generalizations in the result set.
 	}
-	\item{\code{attributes}}{The list of attributes to consider for mining.}
+	\item{\code{attributes}}{The list of attributes to consider for mining.
+	Either a vector of attribute names, or NULL, which includes all attributes.}
 	}
  }
 \seealso{

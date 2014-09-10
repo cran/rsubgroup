@@ -20,6 +20,13 @@
 #    Contact: Martin Atzmueller (martin@atzmueller.net)
 ###############################################################################
 
+.GetAllAttributesAsJArray <- function(ontology) {
+  attributeSetObject <- J(ontology, "getAttributes")
+  attributeArrayObject <- J(attributeSetObject, "toArray")
+  attributeArray <- .jevalArray(attributeArrayObject)
+  attributeIDs <- sapply(attributeArray, FUN=function(a) {J(a, "getId")}, simplify = TRUE)
+  return(.jarray(attributeIDs))
+}
 
 setClass("SDTaskConfig",
     representation(
@@ -32,10 +39,10 @@ setClass("SDTaskConfig",
         nodefaults  = "logical",
         relfilter   = "logical",
         postfilter  = "character",
-        attributes  = "character"
+        attributes  = "vector"
     ),
     prototype(qf="ps", method="sdmap", k = as.integer(20), minqual = as.integer(0), minsize = as.integer(0),
-        maxlen = as.integer(7), nodefaults = FALSE, relfilter = FALSE, postfilter = "", attributes = character(0))
+        maxlen = as.integer(7), nodefaults = FALSE, relfilter = FALSE, postfilter = "", attributes = NULL)
 )
 
 

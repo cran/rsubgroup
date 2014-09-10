@@ -27,7 +27,9 @@ a data.frame using \code{\link{ToDataFrame}}}
 \examples{
 # subgroup discovery on a data.frame, for binary target
 data(credit.data)
-result1 <- DiscoverSubgroups(credit.data, as.target("class", "good"))
+result1 <- DiscoverSubgroups(
+    credit.data, as.target("class", "good"), new("SDTaskConfig",
+    attributes=c("checking_status", "credit_amount", "employment", "purpose")))
 result2 <- DiscoverSubgroups(
     credit.data, as.target("class", "good"), new("SDTaskConfig",
     attributes=c("checking_status", "employment")))
@@ -36,9 +38,10 @@ ToDataFrame(result1)
 ToDataFrame(result2)
 
 # subgroup discovery for numeric target variable
-result3 <- DiscoverSubgroups(credit.data, as.target("credit_amount"))
+result3 <- DiscoverSubgroups(
+    credit.data, as.target("credit_amount"), new("SDTaskConfig",
+    attributes=c("checking_status", "employment")))
 
 ToDataFrame(result3)
 }
 \keyword{subgroup discovery}
-

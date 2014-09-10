@@ -20,12 +20,15 @@ as a data.frame using \code{\link{ToDataFrame}}}
 \examples{
 # creating a task
 data(credit.data)
-task <- CreateSDTask(credit.data, as.target("class", "bad"))
-taskNum <- CreateSDTask(credit.data, as.target("credit_amount"))
+task <- CreateSDTask(
+    credit.data, as.target("class", "bad"), new("SDTaskConfig",
+    attributes=c("checking_status", "employment"))) 
+taskNum <- CreateSDTask(
+    credit.data, as.target("credit_amount"), new("SDTaskConfig",
+    attributes=c("checking_status", "employment")))
 
 # running the tasks
 DiscoverSubgroupsByTask(task)
 DiscoverSubgroupsByTask(taskNum)
 }
 \keyword{subgroup task}
-

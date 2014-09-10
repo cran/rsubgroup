@@ -101,8 +101,13 @@ CreateSDTask <- function(source, target, config = new("SDTaskConfig")) {
   if (config@postfilter != "") {
     J(task, "setPostFilter", config@postfilter)
   }
-  if ((!is.null(config@attributes)) && (length(config@attributes) > 0)) {
-    J(task, "setAttributes", .jarray(config@attributes))
+  if (is.null(config@attributes)) {
+    attributesArrayObject <- .GetAllAttributesAsJArray(ontology = ontology)
+    J(task, "setAttributes", attributesArrayObject)
+  } else if ((!is.null(config@attributes)) && (length(config@attributes) > 0)) {
+    J(task, "setAttributes", .jarray(config@attributes))  
+  } else {
+    J(task, "setAttributes", .jarray(character(0))) 
   }
   return(task)
 }

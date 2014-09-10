@@ -1,0 +1,16 @@
+rsubgroup NEWS
+
+For a detailed list of changes, see the svn commit history at
+svn://r-forge.r-project.org/svnroot/subgroup/
+
+Changes in version 0.6 (2014-09-10)
+===================================
+* Improvements:
+  * optimizations in the beam search algorithm
+  * significant memory optimization (dataset storage, access)
+  * ARFF: enable import of "empty" attributes, i.e., with an empty value domain
+  (this can occur, for example, when importing columns with only 'NA' in R)  
+
+* Bug fixes:
+  * exclude target from subgroup attributes
+  * fix loading of ARFF file, for attributes/values with trailing spaces
