@@ -2,7 +2,7 @@
 #    rsubgroup package R classes
 # 
 #    This file is part of the rsubgroup package.
-#    Copyright (C) 2011-2014 by Martin Atzmueller
+#    Copyright (C) 2011-2019 by Martin Atzmueller
 #    
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -50,7 +50,7 @@ setMethod(".CreateARFFProvider", signature(source = "data.frame", name = "charac
 setMethod(".CreateARFFProvider", signature(source = "character", name = "character"),
     function(source, name, ...) {
       # Creates a dataset provider given a file name
-      provider <- .jnew("org/vikamine/kernel/xpdl/FileDatasetProvider", source)
+      provider <- .jnew("org/vikamine/kernel/xpdl/FileDatasetProvider", source, name)
       return(provider)
     }
 )
@@ -76,13 +76,13 @@ setMethod(".CreateARFFProvider", signature(source = "character", name = "charact
   return(simpleTask)
 }
 
-CreateSDTask <- function(source, target, config = new("SDTaskConfig")) {
+CreateSDTask <- function(source, target, config = SDTaskConfig()) {
   # Creates a subgroup discovery task
   #
   # Args:
   #   source: A data source, i.e., dataframe or file (name)
   #   target: The target variable
-  #   config: A SDTaskConfig
+  #   config: A SDTaskConfig task configuration
   #
   # Returns:
   #   A subgroup discovery task
@@ -95,11 +95,17 @@ CreateSDTask <- function(source, target, config = new("SDTaskConfig")) {
   J(task, "setMaxSGCount", as.integer(config@k))
   J(task, "setMinQualityLimit", as.double(config@minqual))
   J(task, "setMinSubgroupSize", as.double(config@minsize))
+  J(task, "setMinTPSupportAbsolute", as.double(config@mintp))
   J(task, "setMaxSGDSize", as.integer(config@maxlen))
   J(task, "setSuppressStrictlyIrrelevantSubgroups", config@relfilter)
   J(task, "setIgnoreDefaultValues", config@nodefaults)
-  if (config@postfilter != "") {
-    J(task, "setPostFilter", config@postfilter)
+  if ((length(config@postfilter) > 1) || (nchar(config@postfilter) > 0)) {
+    for (filter in config@postfilter) {
+      J(task, "setPostFilter", filter)
+    }
+  }
+  if (!is.na(config@parfilter)) {
+    J(task, "setPostFilterParameter", config@parfilter)
   }
   if (is.null(config@attributes)) {
     attributesArrayObject <- .GetAllAttributesAsJArray(ontology = ontology)
@@ -135,7 +141,8 @@ as.target <- function(attribute=NULL, value=NULL) {
     size <- J(J(sg, "getStatistics"), "getSubgroupSize")
     p <- J(J(sg, "getStatistics"), "getP")
     p0 <- J(J(sg, "getStatistics"), "getP0")
-    return(list(p = p, p0 = p0, size = size))
+    chi2 <- J("org.vikamine.kernel.subgroup.SGUtils")$calculateChi2OfSubgroup(J(sg, "getStatistics"))
+    return(list(p = p, p0 = p0, chi2=chi2, size = size))
   } else if (J(target, "isNumeric")) {
     size <- J(J(sg, "getStatistics"), "getSubgroupSize")
     mean <- J(J(sg, "getStatistics"), "getSGMean")
@@ -160,6 +167,30 @@ as.target <- function(attribute=NULL, value=NULL) {
   return(as.character(sgSelectorArray))
 }
 
+.ExtractSelectors <- function(sgDescription) {
+  # Internal function for converting a (Java) SGDescription consisting
+  # of a set of selection expressions into a list of those expressions
+  # where the 'key' is the attribute and the 'value' is the selector value
+  # Args:
+  #   sgDescription: A (Java) SGDescription object
+  #
+  # Returns:
+  #   A list of characters
+  result <- list()
+  sgSelectorList <- J(J(sgDescription, "getSelectors"), "toArray")
+  sgSelectorArray <- .jevalArray(
+      sgSelectorList,
+      simplify=TRUE)
+  for (selector in sgSelectorArray) {
+    attribute <- .jcall("org/vikamine/kernel/subgroup/search/SDSimpleTask", "Ljava/lang/String;", method = "getAttributeIDOfSelector", .jcast(selector, "org/vikamine/kernel/subgroup/selectors/SGSelector"))
+    value <- .jcall("org/vikamine/kernel/subgroup/search/SDSimpleTask", "Ljava/lang/String;", method="getSingleValueIDOfSelector", .jcast(selector, "org/vikamine/kernel/subgroup/selectors/SGSelector"))
+    tmp <- list()
+    tmp[[attribute]] <- value
+    result <- append(result, tmp)
+  }
+  return(result)
+}
+
 DiscoverSubgroupsByTask <- function(task, as.df = FALSE) {
   # Internal function for setting up and performing subgroup discovery
   # Args:
@@ -171,16 +202,17 @@ DiscoverSubgroupsByTask <- function(task, as.df = FALSE) {
   sgList <- J(sgSet, "toSortedList", FALSE)
   sgArray <- .jevalArray(J(sgList, "toArray"))
   
-  patterns = list()
+  patterns <- list()
   for (sg in sgArray) {
     #description <- as.character(J(J(sg, "getSGDescription"), "getDescription"))
     sgDescription <- J(sg, "getSGDescription")
     description <- .ConvertDescription(sgDescription)
+    selectors <- .ExtractSelectors(sgDescription)
     quality <- J(sg, "getQuality")
     size <- J(J(sg, "getStatistics"), "getSubgroupSize")
-    parameters = .GetParameters(task, sg)    
-    pattern <- new("Pattern", description=description, quality=quality, size=size, parameters=parameters)
-    patterns = append(patterns, pattern)
+    parameters <- .GetParameters(task, sg)    
+    pattern <- new("Pattern", description=description, quality=quality, size=size, parameters=parameters, selectors=selectors)
+    patterns <- append(patterns, pattern)
   }
   
   if (as.df) {
@@ -191,7 +223,7 @@ DiscoverSubgroupsByTask <- function(task, as.df = FALSE) {
   }
 }
 
-DiscoverSubgroups <- function(source, target, config=new("SDTaskConfig"), as.df=FALSE) {
+DiscoverSubgroups <- function(source, target, config=SDTaskConfig(), as.df=FALSE) {
   # Performs subgroup discovery according to target and config on data
   #
   # Args:
@@ -227,28 +259,32 @@ ToDataFrame <- function(patterns, ndigits=2) {
   #
   # Returns:
   #   The dataframe containing the pattern information
-  isNumeric = FALSE  
+  isNumeric <- FALSE  
   descriptions <- list()
-  length(descriptions) = length(patterns)
+  length(descriptions) <- length(patterns)
   qualities <-list()
-  length(qualities) = length(patterns)
+  length(qualities) <- length(patterns)
   sizes <- list()
   length(sizes) <- length(patterns)
   ps <- list()
+  length(ps) <- length(patterns)
+  chi2 <- list()
+  length(chi2) <- length(patterns)
   
-  i = 1
+  i <- 1
   for (pattern in patterns) {
-    descriptions[i] = paste(pattern@description, collapse=", ")
-    qualities[i] = .FormatDoubleSignificantDigits(pattern@quality, ndigits)
-    sizes[i] = pattern@size
+    descriptions[i] <- paste(pattern@description, collapse=", ")
+    qualities[i] <- .FormatDoubleSignificantDigits(pattern@quality, ndigits)
+    sizes[i] <- pattern@size
     if (!is.null(pattern@parameters$mean)) {
-      ps[i] = .FormatDoubleSignificantDigits(pattern@parameters$mean, ndigits)
-      isNumeric = TRUE
+      ps[i] <- .FormatDoubleSignificantDigits(pattern@parameters$mean, ndigits)
+      isNumeric <- TRUE
     } else {
-      ps[i] = .FormatDoubleSignificantDigits(pattern@parameters$p, ndigits)
-      isNumeric = FALSE
+      ps[i] <- .FormatDoubleSignificantDigits(pattern@parameters$p, ndigits)
+      chi2[i] <- .FormatDoubleSignificantDigits(pattern@parameters$chi2, ndigits)
+      isNumeric <- FALSE
     }
-    i = i + 1
+    i <- i + 1
   }
   if (isNumeric) {
     dataframe <- data.frame(
@@ -261,6 +297,7 @@ ToDataFrame <- function(patterns, ndigits=2) {
         quality=as.vector(qualities, "numeric"),
         p=as.vector(ps, "numeric"), 
         size=as.vector(sizes, "numeric"),
+        chi2=as.vector(chi2, "numeric"),
         description=as.vector(descriptions, "character"))
   }
   return(dataframe)
@@ -272,4 +309,18 @@ ToDataFrame <- function(patterns, ndigits=2) {
   gc(...)
   .jcall("java/lang/System", method = "gc")
   invisible()
+}
+
+is.pattern.matching <- function(pattern, data.list) {
+  selectors <- pattern@selectors
+  matching <- TRUE
+  for (sel in names(selectors)) {
+    data.list.selector <- as.character(data.list[[sel]])
+    pattern.selector <- as.character(selectors[[sel]])
+    if (isTRUE(data.list.selector != pattern.selector)) {
+      matching <- FALSE
+      break
+    }
+  }
+  return(matching)
 }

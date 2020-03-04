@@ -8,13 +8,28 @@ rsubgroup Package
 \description{
 The rsubgroup package contains a set of efficient and effective
  tools and algorithms for subgroup discovery and analytics.
+The package integrates an R interface to the org.vikamine.kernel
+library of the VIKAMINE system (http://www.vikamine.org).
+
+Note:
+rsubgroup uses rJava. To set the maximum available heap space for Java, the
+.jinit command of rJava needs to be called before loading rsubgroup, i.e.
+
+library(rJava)
+.jinit(parameters="-Xmx2048M") # for two gigabytes heap space, for example
+library(rsubgroup)
+
+Please note that this needs to happen before rJava is used in any way. After
+the JVM has been initialized (and started), setting the heap space has no effect
+any more. Therefore, it is recommended to execute the .jinit(...) command right
+after loading the rJava package. 
 }
 \details{
 \tabular{ll}{
 Package: \tab rsubgroup\cr
 Type: \tab Package\cr
-Version: \tab 0.6\cr
-Date: \tab 2014-09-10\cr
+Version: \tab 0.7\cr
+Date: \tab 2015-07-xx\cr
 License: \tab GPL (>= 3)\cr
 LazyLoad: \tab yes\cr
 }

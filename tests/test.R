@@ -2,7 +2,7 @@
 #    rsubgroup package R classes
 # 
 #    This file is part of the rsubgroup package.
-#    Copyright (C) 2011-2014 by Martin Atzmueller
+#    Copyright (C) 2011-2019 by Martin Atzmueller
 #    
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -19,6 +19,14 @@
 #
 #    Contact: Martin Atzmueller (martin@atzmueller.net)
 ###############################################################################
+library(rJava)
+
+.jinit()
+jv <- .jcall("java/lang/System", "S", "getProperty", "java.runtime.version")
+if(substr(jv, 1L, 1L) == "1") {
+	jvn <- as.numeric(paste0(strsplit(jv, "[.]")[[1L]][1:2], collapse = "."))
+	if(jvn < 1.8) stop("Java 8 is needed for this package but not available")
+} 
 
 library(rsubgroup)
 

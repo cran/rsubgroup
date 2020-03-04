@@ -3,6 +3,53 @@ rsubgroup NEWS
 For a detailed list of changes, see the svn commit history at
 svn://r-forge.r-project.org/svnroot/subgroup/
 
+Changes in version 0.9 (2020-03-04)
+===================================
+* internal enhancements in subgroup.jar, i.e., the VIKAMINE kernel library
+* rsubgroup requires >= Java 8 (i.e., >= java.version 1.8)   
+
+Changes in version 0.8 (2019-05-23)
+===================================
+* Improvements
+  * included new SDTaskConfig#parfilter: Provides the minimal improvement
+    value for the postfilter (for min-improve-* filters), or the applied
+    significance level (P) for sig-improve-* filters.
+  * updated org.vikamine.kernel version
+  * package-internal: fixed Java requirements (string) in DESCRIPTION
+
+* Bug fixes.
+  * fixed bug in automatic discretization used in rsubgroup VIKAMINE kernel
+
+Changes in version 0.7 (2015-07-01)
+===================================
+* Improvements
+  * document setting Java heap space before loading the rsubgroup library.
+  * Improve error handling (exception signaling) when running subgroup discovery
+  using an ARFF file directly.
+  * SDTaskConfig now provides an option mintp, that allows to set the minimal
+  true positives threshold to be contained in a subgroup, which is usually
+  very effective for pruning.
+  * The Pattern class now contains a list of selection expressions (selectors)
+  for the subgroup, not only the description. Using the is.pattern.matching
+  function, a match of a pattern and a data instance can be checked now.
+  * In SDTaskConfig, postfilter can be a single filter or a vector of filters,
+  that are then applied in order on the results. This allows e.g., the combination
+  of minimal improvement filtering with weighted covering post-processing.
+  * Implement/enable new quality function (Adjusted residuals, cf. Agresti 2007)
+  ==> qf="ares"
+  * For a binary target variable, the resulting patterns now also store the
+  chi-squared value comparing subgroup and population w.r.t. the target in the
+  parameters field.
+  * ToDataFrame shows the chi-squared value for a binary target.
+
+* Bug fixes:
+  * fix providing attributes=NULL (i.e., automatically include all attributes)
+  into subgroup discovery
+  * fix max-attribute-value bug in SGSelectorGenerator, causing the inclusion
+  of two few selectors in subgroup discovery methods
+
+
+
 Changes in version 0.6 (2014-09-10)
 ===================================
 * Improvements:

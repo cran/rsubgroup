@@ -5,7 +5,7 @@
 Performs subgroup discovery according to the given task.
 }
 \usage{
-CreateSDTask(source, target, config=new("SDTaskConfig"))
+CreateSDTask(source, target, config = SDTaskConfig())
 }
 \arguments{
 \item{source}{a data.frame or the a character string giving

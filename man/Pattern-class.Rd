@@ -17,6 +17,10 @@
     \item{\code{description}:}{The subgroup description,
     as a character vector.
     }
+    \item{\code{selectors}:}{The subgroup description,
+    given as a list of (simple) selection expressions, where the
+    'key' is the attribute and the 'value' is the value.
+    }
     \item{\code{quality}:}{The numeric value denoting the
     quality of the subgroup pattern as determined by the applied
     quality function.

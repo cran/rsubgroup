@@ -1,7 +1,6 @@
 \name{SDTaskConfig-class}
 \docType{class}
 \alias{SDTaskConfig-class}
-\alias{SDTaskConfig}
 
 \title{Class ``SDTaskConfig'' --- A Set of Configuration
 	Settings}	
@@ -10,58 +9,73 @@
 
 \section{Objects from the Class}{
   Objects are created by calls of the form
-  \code{new("SDTaskConfig", ...)}.
+  \code{SDTaskConfig(...)}.
 }
 
 \section{Slots}{
   \describe{
+    \item{\code{attributes}:}{The list of attributes to consider for mining.
+    Either a vector of attribute names, or NULL (the default),
+    which includes all attributes.} 
+    \item{\code{method}:}{A mining method; one of
+    Beam-Search \code{beam},
+    BSD \code{bsd},
+    SD-Map \code{sdmap},
+    SD-Map enabling internal disjunctions \code{sdmap-dis}.
+    The default is \code{method = "sdmap"}.
+    }
     \item{\code{qf}:}{A quality function; one of:
-	Binomial-Test \code{bin},
-	Chi-Square-Test \code{chi2},
+    Adjusted Residuals \code{ares},
+	Binomial Test \code{bin},
+	Chi-Square Test \code{chi2},
+	Gain \code{gain},
 	Lift \code{lift},
 	Piatetsky-Shapiro \code{ps},
-	Gain \code{gain},
 	Relative Gain \code{relgain},
 	Weighted Relative Accuracy \code{wracc}.
-	}
-    \item{\code{method}:}{A mining method; one of
-	Beam-Search \code{beam},
-	BSD \code{bsd},
-	SD-Map \code{sdmap},
-	SD-Map enabling internal disjunctions \code{sdmap-dis}.
-	}
+	The default is \code{qf = "ps"}.
+	}    
     \item{\code{k}:}{The maximum number (top-k) of patterns
-	to discover.}
-	\item{\code{minqual}}{The minimal quality.}
-	\item{\code{minsize}}{The minimal size of a subgroup
-	(minimal coverage of database records).}
-	\item{\code{maxlen}}{The maximal description length of
-	a pattern, i.e., the maximal number of conjunctions.}
-	\item{\code{nodefaults}}{Ignore default values, i.e.,
+	to discover. The default is \code{k = 20}}
+	\item{\code{minqual}:}{The minimal quality (default \code{minqual = 0}).}
+	\item{\code{minsize}:}{The minimal size of a subgroup
+	(minimal coverage of database records, default \code{minsize = 0}).}
+	\item{\code{mintp}:}{The minimal true positive (tp) threshold
+	(minimal (absolute) number of true positives in a subgroup, relevant for
+	binary target concepts only), defaults to \code{mintp = 0}}.
+	\item{\code{maxlen}:}{The maximal description length of
+	a pattern, i.e., the maximal number of conjunctions (default \code{maxlen = 7}).}
+	\item{\code{nodefaults}:}{Ignore default values, i.e.,
 	do not include the respective first value of each
-	attribute}
-	\item{\code{relfilter}}{Controls, whether irrelevant
+	attribute (default \code{nodefaults=FALSE}, i.e., include all values).}
+	\item{\code{relfilter}:}{Controls, whether irrelevant
 	patterns are filtered during pattern mining; negatively
-	impacts performance.}
-	\item{\code{postfilter}}{Controls, whether a post-processing
-	filter is applied; one of:
+	impacts performance (default \code{relfilter = FALSE})).}
+	\item{\code{postfilter}:}{Controls, whether a post-processing
+	filter is applied; one (or a vector) of:
 	Minimum Improvement (Global) \code{min-improve-global},
 	checks the patterns against all possible generalizations,
 	Minimum Improvement (Pattern Set) \code{min-improve-set},
 	checks the patterns against all their generalizations
 	in the result set,
 	Relevancy Filter \code{relevancy}, removes patterns that
-	are strictly irrlevant,
+	are strictly irrelevant,
 	Significant Improvement (Global) \code{sig-improve-global},
 	removes patterns that do not significantly improve
-	(0.05 level) w.r.t. all their possible generalizations,
+	(default 0.01 level) w.r.t. all their possible generalizations,
 	Significant Improvement (Set) \code{sig-improve-set},
 	removes patterns that do not significantly improve
-	(0.05 level) w.r.t. all generalizations in the result set.
+	(default 0.01 level) w.r.t. all generalizations in the result set,
+	Weighted Covering \code{weighted-covering}, performs weighted
+	covering on the data in order to select a covering set of
+	subgroups while reducing the overlap on the data. 
+	By default no postfilter is set, i.e., \code{postfilter = ""}.
 	}
-	\item{\code{attributes}}{The list of attributes to consider for mining.
-	Either a vector of attribute names, or NULL, which includes all attributes.}
+	\item{\code{parfilter}:}{Provides the minimal improvement value for the
+	postfilter (for min-improve-* filters), or the significance level (P) for
+	sig-improve-* filters.
 	}
+  }
  }
 \seealso{
 \code{\link{DiscoverSubgroups}}.

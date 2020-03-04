@@ -2,7 +2,7 @@
 #    rsubgroup package R classes
 # 
 #    This file is part of the rsubgroup package.
-#    Copyright (C) 2011-2014 by Martin Atzmueller
+#    Copyright (C) 2011-2019 by Martin Atzmueller
 #    
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -28,6 +28,9 @@
   return(.jarray(attributeIDs))
 }
 
+setClassUnion(".vectorOrNull", members=c("vector", "NULL"))
+setClassUnion(".vectorOrCharacter", members=c("vector", "character"))
+
 setClass("SDTaskConfig",
     representation(
         qf          = "character",
@@ -35,20 +38,28 @@ setClass("SDTaskConfig",
         k           = "numeric",
         minqual     = "numeric",
         minsize     = "numeric",
+        mintp       = "numeric",
         maxlen      = "numeric",
         nodefaults  = "logical",
         relfilter   = "logical",
-        postfilter  = "character",
-        attributes  = "vector"
+        postfilter  = ".vectorOrCharacter",
+        attributes  = ".vectorOrNull",
+        parfilter  = "numeric"
     ),
-    prototype(qf="ps", method="sdmap", k = as.integer(20), minqual = as.integer(0), minsize = as.integer(0),
-        maxlen = as.integer(7), nodefaults = FALSE, relfilter = FALSE, postfilter = "", attributes = NULL)
+    prototype(qf="ps", method="sdmap", k = as.integer(20),
+        minqual = as.integer(0), minsize = as.integer(0), mintp = as.integer(0),
+        maxlen = as.integer(7), nodefaults = FALSE, relfilter = FALSE,
+        postfilter = "", parfilter = 0.05, attributes = NULL)
 )
 
+SDTaskConfig <- function(...){
+  new("SDTaskConfig", ...)
+}
 
 setClass("Pattern",
     representation(
         description="character",
+        selectors="list",
         quality="numeric",
         size="numeric",
         parameters="list"

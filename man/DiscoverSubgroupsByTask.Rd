@@ -21,10 +21,10 @@ as a data.frame using \code{\link{ToDataFrame}}}
 # creating a task
 data(credit.data)
 task <- CreateSDTask(
-    credit.data, as.target("class", "bad"), new("SDTaskConfig",
+    credit.data, as.target("class", "bad"), SDTaskConfig(
     attributes=c("checking_status", "employment"))) 
 taskNum <- CreateSDTask(
-    credit.data, as.target("credit_amount"), new("SDTaskConfig",
+    credit.data, as.target("credit_amount"), SDTaskConfig(
     attributes=c("checking_status", "employment")))
 
 # running the tasks

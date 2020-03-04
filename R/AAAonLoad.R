@@ -2,7 +2,7 @@
 #    rsubgroup package R classes
 # 
 #    This file is part of the rsubgroup package.
-#    Copyright (C) 2011-2014 by Martin Atzmueller
+#    Copyright (C) 2011-2019 by Martin Atzmueller
 #    
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by

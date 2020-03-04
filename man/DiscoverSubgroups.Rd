@@ -6,7 +6,7 @@ Performs subgroup discovery according to the given target and
 the configuration on the data.
 }
 \usage{
-DiscoverSubgroups(source, target, config=new("SDTaskConfig"), as.df=FALSE)
+DiscoverSubgroups(source, target, config= SDTaskConfig(), as.df=FALSE)
 }
 \arguments{
 \item{source}{a data.frame or the a character string giving
