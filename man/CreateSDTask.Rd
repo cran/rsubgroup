@@ -9,7 +9,10 @@ CreateSDTask(source, target, config = SDTaskConfig())
 }
 \arguments{
 \item{source}{a data.frame or the a character string giving
-the filename of an ARFF file to use.}
+the filename of an ARFF file to use. Providing a file name
+directly provides the data to the subgroup discovery
+algorithms on the Java side, which is more memory efficient
+than converting the data frame to the Java representation.}
 \item{target}{the target variable (constructed by as.target)
 to consider for subgroup discovery.}
 \item{config}{an instance of SDTaskConfig providing various

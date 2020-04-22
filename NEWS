@@ -3,6 +3,12 @@ rsubgroup NEWS
 For a detailed list of changes, see the svn commit history at
 svn://r-forge.r-project.org/svnroot/subgroup/
 
+Changes in version 1.0 (2020-04-20)
+===================================
+* internal enhancements in subgroup.jar, i.e., the VIKAMINE kernel library,
+  e.g. according to better error messages relating to the R connection.
+* Improved documentation and examples.
+
 Changes in version 0.9 (2020-03-04)
 ===================================
 * internal enhancements in subgroup.jar, i.e., the VIKAMINE kernel library

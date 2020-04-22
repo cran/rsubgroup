@@ -36,17 +36,20 @@
 	The default is \code{qf = "ps"}.
 	}    
     \item{\code{k}:}{The maximum number (top-k) of patterns
-	to discover. The default is \code{k = 20}}
+	to discover, i.e., the best k rules according to the selected
+	quality function. The default is \code{k = 20}}
 	\item{\code{minqual}:}{The minimal quality (default \code{minqual = 0}).}
-	\item{\code{minsize}:}{The minimal size of a subgroup
+	\item{\code{minsize}:}{The minimal size of a subgroup (as an integer)
 	(minimal coverage of database records, default \code{minsize = 0}).}
-	\item{\code{mintp}:}{The minimal true positive (tp) threshold
+	\item{\code{mintp}:}{The minimal true positive (tp) threshold, an integer
 	(minimal (absolute) number of true positives in a subgroup, relevant for
 	binary target concepts only), defaults to \code{mintp = 0}}.
-	\item{\code{maxlen}:}{The maximal description length of
-	a pattern, i.e., the maximal number of conjunctions (default \code{maxlen = 7}).}
+	\item{\code{maxlen}:}{The maximal length of a description of
+	a pattern, i.e., the maximal number of conjunctions. This impacts both
+	understandability and efficiency. Simpler rules are easier to understand,
+	and a small \code{maxlen} will restrict the search space (default \code{maxlen = 7}).}
 	\item{\code{nodefaults}:}{Ignore default values, i.e.,
-	do not include the respective first value of each
+	do not include the respective first value (with index 0) of each
 	attribute (default \code{nodefaults=FALSE}, i.e., include all values).}
 	\item{\code{relfilter}:}{Controls, whether irrelevant
 	patterns are filtered during pattern mining; negatively
