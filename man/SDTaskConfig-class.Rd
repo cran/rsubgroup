@@ -17,6 +17,11 @@
     \item{\code{attributes}:}{The list of attributes to consider for mining.
     Either a vector of attribute names, or NULL (the default),
     which includes all attributes.} 
+    \item{\code{discretize}:}{Boolean, indicating whether to (automatically)
+    discretize numeric attributes (default \code{discretize=TRUE}. Depends on
+    parameter nbins. Either creates distinct values, if their number in the
+    dataset is <= nbins, or applies equal-frequency discretization for the
+    respective numeric attribute.}
     \item{\code{method}:}{A mining method; one of
     Beam-Search \code{beam},
     BSD \code{bsd},
@@ -24,6 +29,8 @@
     SD-Map enabling internal disjunctions \code{sdmap-dis}.
     The default is \code{method = "sdmap"}.
     }
+    \item{\code{nbins}:}{Specifies the number of bins to be used when
+    discretizing numeric attributes (see \code{discretize} above).}
     \item{\code{qf}:}{A quality function; one of:
     Adjusted Residuals \code{ares},
 	Binomial Test \code{bin},

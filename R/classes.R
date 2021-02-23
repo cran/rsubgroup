@@ -44,12 +44,15 @@ setClass("SDTaskConfig",
         relfilter   = "logical",
         postfilter  = ".vectorOrCharacter",
         attributes  = ".vectorOrNull",
-        parfilter  = "numeric"
+        parfilter   = "numeric",
+		discretize  = "logical",
+		nbins       = "numeric"		
     ),
     prototype(qf="ps", method="sdmap", k = as.integer(20),
         minqual = as.integer(0), minsize = as.integer(0), mintp = as.integer(0),
         maxlen = as.integer(7), nodefaults = FALSE, relfilter = FALSE,
-        postfilter = "", parfilter = 0.05, attributes = NULL)
+        postfilter = "", parfilter = 0.05, discretize = TRUE, nbins = 3,
+		attributes = NULL)
 )
 
 SDTaskConfig <- function(...){

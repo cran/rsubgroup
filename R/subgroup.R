@@ -107,14 +107,23 @@ CreateSDTask <- function(source, target, config = SDTaskConfig()) {
   if (!is.na(config@parfilter)) {
     J(task, "setPostFilterParameter", config@parfilter)
   }
+  
+  doDiscretize = config@discretize
+  if (is.na(config@nbins)) {
+	  doDiscretize = FALSE
+  }
+  intBins = as.integer(config@nbins)
+  
+  
   if (is.null(config@attributes)) {
     attributesArrayObject <- .GetAllAttributesAsJArray(ontology = ontology)
-    J(task, "setAttributes", attributesArrayObject)
+    J(task, "setAttributes", attributesArrayObject, doDiscretize, intBins)
   } else if ((!is.null(config@attributes)) && (length(config@attributes) > 0)) {
-    J(task, "setAttributes", .jarray(config@attributes))  
+    J(task, "setAttributes", .jarray(config@attributes), doDiscretize, intBins)  
   } else {
-    J(task, "setAttributes", .jarray(character(0))) 
+    J(task, "setAttributes", .jarray(character(0)), doDiscretize, intBins) 
   }
+    
   return(task)
 }
 

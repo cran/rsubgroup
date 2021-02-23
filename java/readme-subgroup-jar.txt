@@ -4,7 +4,7 @@ for subgroup discovery and analytics.
 
 VIKAMINE is licensed under LGPL >= 2.1.
 Copyright (C) 2003-2008 by Martin Atzmueller, and contributors.
-Copyright (C) 2008-2020 by Martin Atzmueller, Florian Lemmerich, and contributors.
+Copyright (C) 2008-2021 by Martin Atzmueller, Florian Lemmerich, and contributors.
 
 The source code can be obtained at www.vikamine.org, and the SVN repository
 sourceforge.net/p/vikamine/code/HEAD/tree/trunk/ => org.vikamine.kernel

@@ -23,5 +23,15 @@ library(rsubgroup)
 
 data(credit.data)
 
-patterns.from.data.table <- DiscoverSubgroups(credit.data, as.target("class", "bad"))
+patterns.from.data.table <- DiscoverSubgroups(
+		credit.data,
+		as.target("class", "bad"),
+		new("SDTaskConfig", discretize = FALSE))
+result.data.frame <- ToDataFrame(patterns.from.data.table)
+
+patterns.from.data.table <- DiscoverSubgroups(
+		credit.data,
+		as.target("class", "bad"),
+		new("SDTaskConfig", discretize = TRUE, nbins = 3,
+				attributes = c("checking_status", "duration", "credit_amount")))
 result.data.frame <- ToDataFrame(patterns.from.data.table)

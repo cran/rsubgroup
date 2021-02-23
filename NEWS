@@ -3,16 +3,27 @@ rsubgroup NEWS
 For a detailed list of changes, see the svn commit history at
 svn://r-forge.r-project.org/svnroot/subgroup/
 
+Changes in version 1.1 (2021-02-22)
+===================================
+* provide automatic discretization options of VIKAMINE kernel for
+  numeric attributes, they are internally discretized
+  SDTaskConfig provides new options.
+  defaults: discretize = TRUE, nbins = 3
+* Improved/extended tests for this.
+
+
 Changes in version 1.0 (2020-04-20)
 ===================================
 * internal enhancements in subgroup.jar, i.e., the VIKAMINE kernel library,
   e.g. according to better error messages relating to the R connection.
 * Improved documentation and examples.
 
+
 Changes in version 0.9 (2020-03-04)
 ===================================
 * internal enhancements in subgroup.jar, i.e., the VIKAMINE kernel library
 * rsubgroup requires >= Java 8 (i.e., >= java.version 1.8)   
+
 
 Changes in version 0.8 (2019-05-23)
 ===================================
@@ -25,6 +36,7 @@ Changes in version 0.8 (2019-05-23)
 
 * Bug fixes.
   * fixed bug in automatic discretization used in rsubgroup VIKAMINE kernel
+
 
 Changes in version 0.7 (2015-07-01)
 ===================================
@@ -53,7 +65,6 @@ Changes in version 0.7 (2015-07-01)
   into subgroup discovery
   * fix max-attribute-value bug in SGSelectorGenerator, causing the inclusion
   of two few selectors in subgroup discovery methods
-
 
 
 Changes in version 0.6 (2014-09-10)
